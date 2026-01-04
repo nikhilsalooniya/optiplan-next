@@ -4,9 +4,30 @@ Created by Nikhil Salooniya [[one.salooniya@gmail.com](mailto:one.salooniya@gmai
 
 This project is currently under development.
 
-## Getting Started
+## Tech Stack
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Drizzle ORM
+- PostgreSQL (Neon DB)
+- React Hook Form
+- Zod
+- Better Auth
+- Vercel
+- pnpm create next-app@latest
+- pnpm dlx shadcn@latest init
+- pnpm add @t3-oss/env-nextjs
+- pnpm add drizzle-orm @neondatabase/serverless dotenv
+- pnpm add -D drizzle-kit tsx
+- pnpm add better-auth
+- pnpm add -D dotenv-cli @better-auth/cli
+- pnpm dlx dotenv-cli -e .env.local -- pnpm dlx @better-auth/cli generate
+
+## Getting Started
 
 First, run the development server:
 
