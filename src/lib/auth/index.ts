@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db";
 import { env } from "@/env";
 import * as schema from "@/lib/db/schema";
+import {nanoid} from "nanoid";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -39,11 +40,14 @@ export const auth = betterAuth({
   },
   advanced: {
     cookiePrefix: "optiplan",
+    database: {
+      generateId: () => nanoid(),
+    }
   },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
   appName: env.NEXT_PUBLIC_APP_NAME,
 });
 
-export type Session = typeof auth.$Infer.Session;
+export type Session = typeof auth.$Infer.Session.session;
 export type User = typeof auth.$Infer.Session.user;

@@ -1,0 +1,168 @@
+'use client';
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldDescription, FieldError,
+  FieldGroup,
+  FieldLabel, FieldSeparator,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { SignupInput, signupSchema } from "@/validators/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { signUp } from "@/lib/auth/client";
+import { Spinner } from "@/components/ui/spinner";
+
+export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema)
+  });
+
+  const onSubmit = async (data: SignupInput) => {
+    setIsLoading(true);
+
+    try {
+      const result = await signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message || "Sign up failed!");
+      } else {
+        toast.success("Sign up successful!");
+        router.push("/dashboard");
+      }
+
+    } catch (error) {
+      toast.error("Something went wrong! Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">Create your account</CardTitle>
+          <CardDescription>
+            Enter your email below to create your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                <Input
+                  {...register('name')}
+                  disabled={ isLoading }
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                />
+                {
+                  errors.name && <FieldError>{errors.name?.message}</FieldError>
+                }
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  {...register('email')}
+                  disabled={ isLoading }
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  required
+                />
+                {
+                  errors.email && <FieldError>{errors.email?.message}</FieldError>
+                }
+              </Field>
+              <Field>
+                <Field className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <Input
+                      {...register('password')}
+                      disabled={ isLoading }
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      required
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="confirm-password">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      {...register('confirmPassword')}
+                      disabled={ isLoading }
+                      id="confirm-password"
+                      placeholder="••••••••"
+                      type="password"
+                      required
+                    />
+                  </Field>
+                </Field>
+                {
+                  errors.password && <FieldError>{errors.password?.message}</FieldError>
+                }
+                {
+                  errors.confirmPassword && <FieldError>{errors.confirmPassword?.message}</FieldError>
+                }
+              </Field>
+              <Field>
+                <Button type="submit" disabled={ isLoading }>
+                  { isLoading ? <Spinner /> : "Create Account" }
+                </Button>
+              </Field>
+              <FieldSeparator>Or continue with</FieldSeparator>
+              <Field>
+                <Button variant="outline" type="button" disabled={ isLoading }>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Sign up with Google
+                </Button>
+                <FieldDescription className="text-center">
+                  Already have an account? <a href="/login">Log in</a>
+                </FieldDescription>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
+      <FieldDescription className="px-6 max-w-xs mx-auto text-center">
+        By creating an account, you agree to our <a href="/terms-of-service">Terms of Service</a>{" "}
+        and <a href="/privacy-policy">Privacy Policy</a>.
+      </FieldDescription>
+    </div>
+  )
+}

@@ -26,6 +26,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - pnpm add better-auth
 - pnpm add -D dotenv-cli @better-auth/cli
 - pnpm dlx dotenv-cli -e .env.local -- pnpm dlx @better-auth/cli generate
+- pnpm add drizzle-zod
+- pnpm add react-hook-form @hookform/resolvers
+- pnpm dlx shadcn@latest add sonner
 
 ## Getting Started
 

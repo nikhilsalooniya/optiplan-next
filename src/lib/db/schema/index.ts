@@ -1,5 +1,6 @@
 import {relations} from "drizzle-orm";
 import {pgTable, text, timestamp, boolean, index, pgEnum} from "drizzle-orm/pg-core";
+import {createInsertSchema, createSelectSchema} from "drizzle-zod";
 
 export const userRoleEnum = pgEnum("user_role", ["admin", "provider", "customer"]);
 
@@ -84,3 +85,6 @@ export const accountsRelations = relations(accounts, ({one}) => ({
     references: [users.id],
   }),
 }));
+
+export const insertUserSchema = createInsertSchema(users);
+export const selectUserSchema = createSelectSchema(users);
